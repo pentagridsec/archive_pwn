@@ -22,6 +22,7 @@ Our tool here is therefore not "new", but different. Advantages of this tool:
 - Modifiable by people who like Python, easy to add your own idea of a malicious archive. The current working directory (cwd) will be changed to the "folder-to-pack" folder by the script. You can then easily add another test case, e.g.:
 
 ::
+
     attack_name = "my_example_archive_attack"
     for archive in creator.create(attack_name):
         try:
