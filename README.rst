@@ -1,4 +1,4 @@
-`Pentagrid <https://www.pentagrid.ch/>`_'s ``archive pwn`` is a Python-based tool to create zip, tar and cpio archives to exploit common archive library issues and developer mistakes.
+`Pentagrid <https://www.pentagrid.ch/en/blog/archive-pwn-tool-release-for-penetration-testing/>`_'s ``archive pwn`` is a Python-based tool to create zip, tar and cpio archives to exploit common archive library issues and developer mistakes.
 
 .. contents:: 
    :local:
