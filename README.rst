@@ -13,6 +13,7 @@ It's a very old vulnerability class where a lot of things have been written abou
 - https://github.com/jwilk/traversal-archives - A tool that creates the simple examples we create here too, but with Makefiles. Supports more archive formats.
 - https://github.com/0xless/slip - A proper command line tool that allows configuring the payloads. Supports no cpio, but some other archive formats we don't.
 - https://github.com/snyk/zip-slip-vulnerability - Research about the topic
+- https://www.pentagrid.ch/en/blog/wind-river-vxworks-tarextract-directory-traversal-vulnerability/ - One of our advisories where we exploited VxWorks tarExtract function, the blog post deep dives a little more into the different archive vulnerabilities
 
 Our tool here is therefore not "new", but different. Advantages of this tool:
 
