@@ -18,8 +18,8 @@ It's a very old vulnerability class where a lot of things have been written abou
 Our tool here is therefore not "new", but different. Advantages of this tool:
 
 - Support for hardlinks in TAR files
-- Includes the contents of the folder "folder-to-pack" in the archive. This is important if the attacked system first checks for the existance of certain files in the archive or even does signature checks on them (think "embedded device secure software update").
-- Added some more complex examples (ideas often taken from old vulnerabilities), e.g. maximum Windows path length attckas, unicode normalisation, DoS via very deep directory
+- Includes the contents of the folder "folder-to-pack" in the archive. This is important if the attacked system first checks for the existence of certain files in the archive or even does signature checks on them (think "embedded device secure software update").
+- Added some more complex examples (ideas often taken from old vulnerabilities), e.g. maximum Windows path length attacks, unicode normalisation, DoS via very deep directory
 - Modifiable by people who like Python, easy to add your own idea of a malicious archive. The current working directory (cwd) will be changed to the "folder-to-pack" folder by the script. You can then easily add another test case, e.g.:
 
 ::
