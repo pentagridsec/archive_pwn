@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Foo-Compatibility-Version: 4
+Implementation-Name: yesname
+Implementation-Version: 1337
+Implementation-Vendor: Acme Org
+Specification-Name: yesname
+Specification-Vendor: Acme Org
+Multi-Release: true
+JAR-Type: Standalone
+Main-Class: example.StartClass
+SplashScreen-Image: symlinkRoot
+Add-Opens: java.base/java.lang

