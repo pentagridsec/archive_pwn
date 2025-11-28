@@ -1,4 +1,4 @@
-`Pentagrid <https://www.pentagrid.ch/>`_'s ``archive pwn`` is a Python-based tool to create zip, tar and cpio archives to exploit common archive library issues and developer mistakes.
+`Pentagrid <https://www.pentagrid.ch/en/blog/archive-pwn-tool-release-for-penetration-testing/>`_'s ``archive pwn`` is a Python-based tool to create zip, tar and cpio archives to exploit common archive library issues and developer mistakes.
 
 .. contents:: 
    :local:
@@ -13,12 +13,13 @@ It's a very old vulnerability class where a lot of things have been written abou
 - https://github.com/jwilk/traversal-archives - A tool that creates the simple examples we create here too, but with Makefiles. Supports more archive formats.
 - https://github.com/0xless/slip - A proper command line tool that allows configuring the payloads. Supports no cpio, but some other archive formats we don't.
 - https://github.com/snyk/zip-slip-vulnerability - Research about the topic
+- https://www.pentagrid.ch/en/blog/wind-river-vxworks-tarextract-directory-traversal-vulnerability/ - One of our advisories where we exploited VxWorks tarExtract function, the blog post deep dives a little more into the different archive vulnerabilities
 
 Our tool here is therefore not "new", but different. Advantages of this tool:
 
 - Support for hardlinks in TAR files
-- Includes the contents of the folder "folder-to-pack" in the archive. This is important if the attacked system first checks for the existance of certain files in the archive or even does signature checks on them (think "embedded device secure software update").
-- Added some more complex examples (ideas often taken from old vulnerabilities), e.g. maximum Windows path length attckas, unicode normalisation, DoS via very deep directory
+- Includes the contents of the folder "folder-to-pack" in the archive. This is important if the attacked system first checks for the existence of certain files in the archive or even does signature checks on them (think "embedded device secure software update").
+- Added some more complex examples (ideas often taken from old vulnerabilities), e.g. maximum Windows path length attacks, unicode normalisation, DoS via very deep directory
 - Modifiable by people who like Python, easy to add your own idea of a malicious archive. The current working directory (cwd) will be changed to the "folder-to-pack" folder by the script. You can then easily add another test case, e.g.:
 
 ::
